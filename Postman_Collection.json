@@ -1,0 +1,446 @@
+{
+  "info": {
+    "name": "Node.js Session & Cookie Testing",
+    "description": "Collection for testing session and cookie functionality in Node.js MVC application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "session_cookie",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register New User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "fullName",
+                  "value": "Postman Test User",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "postmanuser",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "postman@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "postman123",
+                  "type": "text"
+                },
+                {
+                  "key": "confirmPassword",
+                  "value": "postman123",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Login successful\", function () {",
+                  "    pm.response.to.have.status(302);",
+                  "});",
+                  "",
+                  "// Capture session cookie",
+                  "const cookies = pm.response.headers.get('Set-Cookie');",
+                  "if (cookies) {",
+                  "    const sessionCookieMatch = cookies.match(/connect\\.sid=([^;]+)/);",
+                  "    if (sessionCookieMatch) {",
+                  "        pm.environment.set('session_cookie', 'connect.sid=' + sessionCookieMatch[1]);",
+                  "        console.log('Session cookie captured:', sessionCookieMatch[1]);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "identifier",
+                  "value": "testuser",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "test123",
+                  "type": "text"
+                },
+                {
+                  "key": "rememberMe",
+                  "value": "true",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Session Management",
+      "item": [
+        {
+          "name": "Get Session Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/session/info",
+              "host": ["{{base_url}}"],
+              "path": ["session", "info"]
+            }
+          }
+        },
+        {
+          "name": "Set Session Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"userTheme\",\n  \"value\": \"dark-mode\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/session/set",
+              "host": ["{{base_url}}"],
+              "path": ["session", "set"]
+            }
+          }
+        },
+        {
+          "name": "Get Session Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/session/get/userTheme",
+              "host": ["{{base_url}}"],
+              "path": ["session", "get", "userTheme"]
+            }
+          }
+        },
+        {
+          "name": "Clear Session Data",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/session/clear",
+              "host": ["{{base_url}}"],
+              "path": ["session", "clear"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cookie Management",
+      "item": [
+        {
+          "name": "Set Custom Cookie",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"customCookie\",\n  \"value\": \"customValue123\",\n  \"maxAge\": 3600000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/session/cookie/set",
+              "host": ["{{base_url}}"],
+              "path": ["session", "cookie", "set"]
+            }
+          }
+        },
+        {
+          "name": "Get All Cookies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/session/cookies",
+              "host": ["{{base_url}}"],
+              "path": ["session", "cookies"]
+            }
+          }
+        },
+        {
+          "name": "Clear Custom Cookie",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/session/cookie/clear/customCookie",
+              "host": ["{{base_url}}"],
+              "path": ["session", "cookie", "clear", "customCookie"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Protected Routes",
+      "item": [
+        {
+          "name": "Access Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Access Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "fullName",
+                  "value": "Updated Test User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "updated@example.com",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Access Products (Protected)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Access Suppliers (Protected)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{session_cookie}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/suppliers",
+              "host": ["{{base_url}}"],
+              "path": ["suppliers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test Unauthorized Access",
+      "item": [
+        {
+          "name": "Access Dashboard Without Auth",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Access Session Info Without Auth",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/session/info",
+              "host": ["{{base_url}}"],
+              "path": ["session", "info"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

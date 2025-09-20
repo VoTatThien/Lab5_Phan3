@@ -1,0 +1,108 @@
+<%- include('partials/header') %>
+
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white rounded p-5 mb-4">
+            <h1 class="display-4">
+                <i class="fas fa-boxes me-3"></i>
+                Hệ Thống Quản Lý Sản Phẩm & Nhà Cung Cấp
+            </h1>
+            <p class="lead">Quản lý hiệu quả các nhà cung cấp và sản phẩm với ứng dụng CRUD toàn diện của chúng tôi.</p>
+            <hr class="my-4">
+            <p>Được xây dựng với Node.js, Express, MongoDB và Bootstrap để mang đến trải nghiệm web hiện đại.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-truck me-2"></i>
+                    Quản Lý Nhà Cung Cấp
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Quản lý cơ sở dữ liệu nhà cung cấp bao gồm thông tin liên hệ, địa chỉ và số điện thoại.
+                </p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Thêm nhà cung cấp mới</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Chỉnh sửa thông tin nhà cung cấp</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Xem chi tiết nhà cung cấp</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Xóa nhà cung cấp</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="/suppliers" class="btn btn-success">
+                    <i class="fas fa-eye me-2"></i>Xem Nhà Cung Cấp
+                </a>
+                <a href="/suppliers/new" class="btn btn-outline-success">
+                    <i class="fas fa-plus me-2"></i>Thêm Nhà Cung Cấp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-box me-2"></i>
+                    Quản Lý Sản Phẩm
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Quản lý kho hàng sản phẩm với giá cả, số lượng và mối quan hệ với nhà cung cấp.
+                </p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-info me-2"></i>Thêm sản phẩm mới</li>
+                    <li><i class="fas fa-check text-info me-2"></i>Cập nhật chi tiết sản phẩm</li>
+                    <li><i class="fas fa-check text-info me-2"></i>Theo dõi tồn kho</li>
+                    <li><i class="fas fa-check text-info me-2"></i>Liên kết với nhà cung cấp</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="/products" class="btn btn-info">
+                    <i class="fas fa-eye me-2"></i>Xem Sản Phẩm
+                </a>
+                <a href="/products/new" class="btn btn-outline-info">
+                    <i class="fas fa-plus me-2"></i>Thêm Sản Phẩm
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Tính Năng Hệ Thống
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-database text-primary me-2"></i>Cơ Sở Dữ Liệu</h6>
+                        <p class="small">MongoDB với Mongoose ODM để quản lý dữ liệu mạnh mẽ</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-sitemap text-primary me-2"></i>Kiến Trúc</h6>
+                        <p class="small">Mô hình MVC (Model-View-Controller) để tách biệt rõ ràng</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-mobile-alt text-primary me-2"></i>Responsive</h6>
+                        <p class="small">Thiết kế responsive với Bootstrap cho mọi thiết bị</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

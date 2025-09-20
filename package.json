@@ -1,0 +1,36 @@
+{
+  "name": "node-mvc-crud-product-supplier",
+  "version": "1.0.0",
+  "description": "CRUD application for products and suppliers using Node.js, MongoDB, and Mongoose with MVC architecture",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "seed": "node seed.js"
+  },
+  "keywords": [
+    "nodejs",
+    "mongodb",
+    "mongoose",
+    "mvc",
+    "crud",
+    "express",
+    "ejs"
+  ],
+  "author": "Lab5 Project",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "method-override": "^3.0.0",
+    "mongoose": "^7.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

@@ -1,0 +1,265 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <!-- Welcome Header -->
+  <div class="row">
+    <div class="col-12">
+      <div class="jumbotron bg-primary text-white p-4 rounded">
+        <h1 class="display-4">Welcome, <%= user.displayName %>!</h1>
+        <p class="lead">You are successfully logged in and your session is active.</p>
+        <hr class="my-4">
+        <p>Last login: <%= user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'First time login' %></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flash Messages -->
+  <% if (error && error.length > 0) { %>
+    <div class="alert alert-danger">
+      <%= error %>
+    </div>
+  <% } %>
+  
+  <% if (success && success.length > 0) { %>
+    <div class="alert alert-success">
+      <%= success %>
+    </div>
+  <% } %>
+
+  <!-- Navigation Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <h5 class="card-title">Products</h5>
+          <p class="card-text">Manage products</p>
+          <a href="/products" class="btn btn-primary">Go to Products</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <h5 class="card-title">Suppliers</h5>
+          <p class="card-text">Manage suppliers</p>
+          <a href="/suppliers" class="btn btn-info">Go to Suppliers</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <h5 class="card-title">Profile</h5>
+          <p class="card-text">Edit your profile</p>
+          <a href="/auth/profile" class="btn btn-warning">Edit Profile</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <h5 class="card-title">Logout</h5>
+          <p class="card-text">End your session</p>
+          <a href="/auth/logout" class="btn btn-danger">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session and Cookie Information -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5>Session Information</h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-sm">
+            <tr>
+              <th>Session ID:</th>
+              <td class="font-monospace"><%= sessionInfo.sessionId %></td>
+            </tr>
+            <tr>
+              <th>User ID:</th>
+              <td><%= user._id %></td>
+            </tr>
+            <tr>
+              <th>Username:</th>
+              <td><%= user.username %></td>
+            </tr>
+            <tr>
+              <th>Email:</th>
+              <td><%= user.email %></td>
+            </tr>
+            <tr>
+              <th>Role:</th>
+              <td><span class="badge bg-<%= user.role === 'admin' ? 'danger' : 'secondary' %>"><%= user.role %></span></td>
+            </tr>
+            <tr>
+              <th>Login Time:</th>
+              <td><%= sessionInfo.sessionData.user.loginTime %></td>
+            </tr>
+            <tr>
+              <th>Account Created:</th>
+              <td><%= new Date(user.createdAt).toLocaleString() %></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5>Cookie Information</h5>
+        </div>
+        <div class="card-body">
+          <h6>Current Cookies:</h6>
+          <div class="mb-3">
+            <% if (Object.keys(sessionInfo.cookies).length > 0) { %>
+              <% for (const [key, value] of Object.entries(sessionInfo.cookies)) { %>
+                <div class="mb-2">
+                  <strong><%= key %>:</strong>
+                  <br>
+                  <small class="text-muted font-monospace"><%= typeof value === 'object' ? JSON.stringify(value) : value %></small>
+                </div>
+              <% } %>
+            <% } else { %>
+              <small class="text-muted">No additional cookies set</small>
+            <% } %>
+          </div>
+
+          <div class="mb-3">
+            <h6>Session Cookie Info:</h6>
+            <small class="text-muted">
+              The session cookie (connect.sid) is automatically managed by Express Session.
+              <br>
+              <strong>Cookie Duration:</strong> <span id="cookie-duration">Calculating...</span>
+            </small>
+          </div>
+
+          <button class="btn btn-sm btn-outline-primary" onclick="showAllCookies()">Show All Cookies (JS)</button>
+          <div id="js-cookies" class="mt-2" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Testing Tools -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>Session & Cookie Testing Tools</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <h6>Test Session Data</h6>
+              <button class="btn btn-sm btn-outline-info" onclick="testSessionAPI()">Test Session API</button>
+              <div id="session-test-result" class="mt-2"></div>
+            </div>
+            <div class="col-md-4">
+              <h6>Test Cookies</h6>
+              <button class="btn btn-sm btn-outline-warning" onclick="setCookieTest()">Set Test Cookie</button>
+              <button class="btn btn-sm btn-outline-danger" onclick="clearCookieTest()">Clear Test Cookie</button>
+              <div id="cookie-test-result" class="mt-2"></div>
+            </div>
+            <div class="col-md-4">
+              <h6>Session Timer</h6>
+              <div>Session Age: <span id="session-age">Calculating...</span></div>
+              <div>Time Until Expiry: <span id="time-until-expiry">Calculating...</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// JavaScript for cookie and session demonstrations
+document.addEventListener('DOMContentLoaded', function() {
+  updateSessionTimer();
+  setInterval(updateSessionTimer, 1000); // Update every second
+});
+
+function showAllCookies() {
+  const cookiesDiv = document.getElementById('js-cookies');
+  const cookies = document.cookie.split(';');
+  
+  let cookieHTML = '<small class="text-muted">';
+  if (cookies[0] === '') {
+    cookieHTML += 'No cookies found';
+  } else {
+    cookies.forEach(cookie => {
+      const [name, value] = cookie.trim().split('=');
+      cookieHTML += `<strong>${name}:</strong> ${value}<br>`;
+    });
+  }
+  cookieHTML += '</small>';
+  
+  cookiesDiv.innerHTML = cookieHTML;
+  cookiesDiv.style.display = cookiesDiv.style.display === 'none' ? 'block' : 'none';
+}
+
+function testSessionAPI() {
+  fetch('/session/test')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('session-test-result').innerHTML = 
+        '<small class="text-success">✓ Session API working: ' + data.message + '</small>';
+    })
+    .catch(error => {
+      document.getElementById('session-test-result').innerHTML = 
+        '<small class="text-danger">✗ Error: ' + error.message + '</small>';
+    });
+}
+
+function setCookieTest() {
+  document.cookie = 'testCookie=testValue; max-age=3600; path=/';
+  document.getElementById('cookie-test-result').innerHTML = 
+    '<small class="text-success">✓ Test cookie set</small>';
+}
+
+function clearCookieTest() {
+  document.cookie = 'testCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  document.getElementById('cookie-test-result').innerHTML = 
+    '<small class="text-info">Test cookie cleared</small>';
+}
+
+function updateSessionTimer() {
+  const loginTime = new Date('<%= sessionInfo.sessionData.user.loginTime %>');
+  const now = new Date();
+  const sessionAge = Math.floor((now - loginTime) / 1000);
+  
+  // Calculate session age
+  const hours = Math.floor(sessionAge / 3600);
+  const minutes = Math.floor((sessionAge % 3600) / 60);
+  const seconds = sessionAge % 60;
+  
+  document.getElementById('session-age').textContent = 
+    `${hours}h ${minutes}m ${seconds}s`;
+  
+  // Calculate cookie duration (24 hours default)
+  const cookieMaxAge = parseInt('<%= sessionInfo.sessionData.cookie.maxAge || 86400000 %>'); // milliseconds
+  const cookieDuration = Math.floor(cookieMaxAge / 1000); // convert to seconds
+  const timeUntilExpiry = cookieDuration - sessionAge;
+  
+  if (timeUntilExpiry > 0) {
+    const expHours = Math.floor(timeUntilExpiry / 3600);
+    const expMinutes = Math.floor((timeUntilExpiry % 3600) / 60);
+    const expSeconds = timeUntilExpiry % 60;
+    
+    document.getElementById('time-until-expiry').textContent = 
+      `${expHours}h ${expMinutes}m ${expSeconds}s`;
+    
+    document.getElementById('cookie-duration').textContent = 
+      `${Math.floor(cookieMaxAge / (1000 * 60 * 60))} hours`;
+  } else {
+    document.getElementById('time-until-expiry').textContent = 'Expired';
+  }
+}
+</script>
+
+<%- include('../partials/footer') %>
